@@ -2,39 +2,47 @@ import MaterialTable from 'material-table';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import { fetchdataImages } from "../../store/actions/imageAction";
+import "./Dashboard.css";
 
 class Dashboard extends Component {
     constructor(props){
         super(props);
         this.state = {
-            data : []
+            data : [],
+            error : ''
         }
     }
 
     componentDidMount(){
-        this.props.fetchData(this.onResponse);
+        this.props.fetchData(this.onResponse,this.onError);
     }
 
     onResponse = (res) => {
         this.setState({data :res})
     }
 
+    onError = (err) => {
+        this.setState({error :err})
+    }
+
+    //add/update/delete table data
     setData = (data) => {
         this.setState({data})
     }
 
-    render() {
-
+    getTableHeaders = () => {
         const gridHeader = [
             {
                 title : 'AlbumId',
                 field : 'albumId',
-                hidden : false
+                hidden : false,
+                editable: 'never'
             },
             {
                 title : 'Id',
                 field : 'id',
-                hidden : false
+                hidden : false,
+                editable: 'never'
             },
             {
                 title : 'Title',
@@ -44,17 +52,26 @@ class Dashboard extends Component {
             {
                 title : 'Url',
                 field : 'url',
-                hidden : false
+                hidden : false,
+                render: rowData => <a href={rowData.url} target="_blank" rel="noreferrer">{rowData.url}</a> 
             },
             {
                 title : 'Thumbnail Url',
                 field : 'thumbnailUrl',
-                hidden : false
+                hidden : false,
+                render: rowData => <a href={rowData.thumbnailUrl} target="_blank" rel="noreferrer">{rowData.thumbnailUrl}</a> 
             }
-        ]   
-        let data = this.state.data;
+        ]
+
+        return gridHeader;
+    }
+
+    render() {
+        const gridHeader = this.getTableHeaders();   
+        const data = this.state.data;
 
         return (
+            !this.state.error ? 
             <MaterialTable
                 columns={gridHeader}
                 data={data}
@@ -92,7 +109,9 @@ class Dashboard extends Component {
                         }, 1000)
                       }),
                   }}
-            />
+            /> : <div className="errorBox">
+                OOPS ! Something went wrong
+                </div>
         )
     }
 }

@@ -8,8 +8,4 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-  //create main component
-  //material -ui
-  //material table
-  //create store
   

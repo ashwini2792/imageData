@@ -8,23 +8,20 @@ export function* fetchData(...action){
     try {
         const result = yield call(fetchDataAPI);
         if(result.status === 200){
-            const someImages = result.data.filter((img,index)=>{
-                    return index < 5
-            })
             if(onSuc){
-                onSuc(someImages)
+                onSuc(result.data)
             }
-            yield put({type:ActionType.RESPONSE_DATA,payload:someImages})
+            yield put({type:ActionType.RESPONSE_DATA,payload:result.data})
         }
         else{
             yield put({type:ActionType.ERROR,payload:result.statusText})
             if(onErr){
-                onErr('someImages')
+                onErr('Error Occured')
             }
         }
     }catch(error){
         if(onErr){
-            onErr('someImages')
+            onErr('Error Occured')
         }
         yield put({type:ActionType.ERROR,payload:error})
     }
